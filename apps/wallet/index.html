@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cloud Bot Wallet</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font: 16px/1.45 system-ui, sans-serif; max-width: 36rem; margin: 2rem auto; padding: 0 1rem; }
+      h1 { font-size: 1.4rem; }
+      button, input { font: inherit; }
+      button { padding: 0.5rem 0.8rem; border-radius: 0.4rem; border: 1px solid #888; background: #111; color: #fff; cursor: pointer; }
+      .ghost { background: transparent; color: inherit; }
+      code, .addr { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+      .addr { display: block; margin: 0.6rem 0; padding: 0.6rem; border: 1px solid #888; border-radius: 0.4rem; }
+      .warn { font-size: 0.9rem; }
+      .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.6rem 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Cloud Bot Wallet</h1>
+    <p>This is how you use this browser to get paid. No Coinbase account. No paste.</p>
+    <p>Open this page. It makes a Base address. That address is where your 25% of the Cloud Meter cut goes, in USDC.</p>
+    <p class="warn">The meter is not live on Base yet. This address can already receive USDC. Saving it does not start payments.</p>
+    <div class="row">
+      <button id="make" type="button">Make my wallet</button>
+      <button id="copy" class="ghost" type="button" hidden>Copy address</button>
+      <button id="reveal" class="ghost" type="button" hidden>Show backup key</button>
+    </div>
+    <p id="status"></p>
+    <div id="address" class="addr" hidden></div>
+    <p id="backup" class="warn" hidden></p>
+    <script type="module">
+      import { generatePrivateKey, privateKeyToAccount } from 'https://esm.sh/viem@2.21.54/accounts';
+
+      const KEY = 'cloudBotWallet';
+      const status = document.querySelector('#status');
+      const addressEl = document.querySelector('#address');
+      const backup = document.querySelector('#backup');
+      const make = document.querySelector('#make');
+      const copy = document.querySelector('#copy');
+      const reveal = document.querySelector('#reveal');
+
+      function show(wallet) {
+        addressEl.hidden = false;
+        addressEl.textContent = wallet.address;
+        copy.hidden = false;
+        reveal.hidden = false;
+        make.textContent = 'Wallet ready';
+        status.textContent = 'This address is on Base. Your 25% is paid here in USDC.';
+      }
+
+      function load() {
+        const raw = localStorage.getItem(KEY);
+        if (!raw) return;
+        show(JSON.parse(raw));
+      }
+
+      make.addEventListener('click', () => {
+        const existing = localStorage.getItem(KEY);
+        if (existing) {
+          show(JSON.parse(existing));
+          return;
+        }
+        const privateKey = generatePrivateKey();
+        const account = privateKeyToAccount(privateKey);
+        const wallet = { address: account.address, privateKey };
+        localStorage.setItem(KEY, JSON.stringify(wallet));
+        show(wallet);
+      });
+
+      copy.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(addressEl.textContent);
+        status.textContent = 'Address copied.';
+      });
+
+      reveal.addEventListener('click', () => {
+        const wallet = JSON.parse(localStorage.getItem(KEY) || '{}');
+        backup.hidden = false;
+        backup.textContent = 'Backup key. Anyone with this key owns the wallet. Write it down. ' + wallet.privateKey;
+      });
+
+      load();
+    </script>
+  </body>
+</html>

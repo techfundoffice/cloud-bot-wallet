@@ -1,10 +1,10 @@
 # Cloud Bot Wallet
 
-This is the wallet you use to get paid.
+This is how you use this browser to get paid.
 
-Fork of [coinbase/cdp-wallet-demo-apps](https://github.com/coinbase/cdp-wallet-demo-apps). You sign in with email. It makes a Base address. That address is where your 25% of the Cloud Meter cut goes, in USDC. No paste. No seed phrase.
+Open `apps/wallet/index.html`. Click Make my wallet. It makes a Base address. That address is where your 25% of the Cloud Meter cut goes, in USDC. No Coinbase account. No paste. No seed phrase.
 
-It is not live yet. It needs a free Coinbase Developer Platform project id. Saving an address does not start payments.
+The meter is not live on Base yet. The address can already receive USDC. Making a wallet does not start payments.
 
 ## What the cut is
 
@@ -21,23 +21,21 @@ That cut is split three ways:
 
 If this wallet is empty, the 25% goes to the treasury too.
 
-## Get started
+## Make a wallet
 
 ```bash
 git clone https://github.com/techfundoffice/cloud-bot-wallet.git
 cd cloud-bot-wallet
-pnpm install
+open apps/wallet/index.html
 ```
 
-Put a CDP project id in the app `.env`, then run the React app in `apps/react-wagmi` or `apps/react-custom-auth`.
+The key is stored in this browser only. Show backup key writes it down. Anyone with that key owns the wallet.
 
-## Apps in the fork
+## The fork
 
+This repo is a fork of [coinbase/cdp-wallet-demo-apps](https://github.com/coinbase/cdp-wallet-demo-apps). Those apps still need a Coinbase Developer Platform project id. The wallet above does not.
+
+- [Wallet](apps/wallet/index.html)
 - [React Wagmi](apps/react-wagmi)
 - [React Custom Auth](apps/react-custom-auth)
 - [Agent Hub](apps/agent-hub)
-- [React Native Expo](apps/react-native-expo)
-- [React Native Bare](apps/react-native-bare)
-- [React Native Expo Wagmi](apps/react-native-expo-wagmi)
-- [Solana Standard Wallet - With CDP Hooks](apps/solana-standard-wallet-with-cdp-hooks)
-- [Solana Standard Wallet - Standalone](apps/solana-standard-wallet-standalone)
